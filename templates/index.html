@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Image Generator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        textarea { width: 80%; height: 100px; }
+        button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+        .image-container { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; }
+        .image-container img { width: 300px; height: auto; margin: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Generate Story Essay</h1>
+    <textarea id="text-input" placeholder="Enter your paragraph here..."></textarea>
+    <br>
+    <button onclick="generateImages()">Generate</button>
+    <div class="image-container" id="image-results"></div>
+
+    <script>
+        function generateImages() {
+            var userInput = document.getElementById("text-input").value;
+            if (!userInput) {
+                alert("Please enter some text.");
+                return;
+            }
+            
+            $.ajax({
+                url: "/generate",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ paragraph: userInput }),
+                success: function(response) {
+                    $("#image-results").empty();
+                    response.images.forEach(img => {
+                        $("#image-results").append(`<img src="${img}" alt="Generated Image">`);
+                    });
+                },
+                error: function() {
+                    alert("Error generating images. Please try again.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
